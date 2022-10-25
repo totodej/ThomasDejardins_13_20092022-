@@ -1,8 +1,4 @@
 const userProfile = async (token) => {
-  if (token) {
-    token = token.replace(/"/g, "");
-  }
-
   return fetch("http://localhost:3001/api/v1/user/profile", {
     method: "POST",
     headers: {

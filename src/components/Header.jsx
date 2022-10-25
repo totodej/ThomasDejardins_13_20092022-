@@ -4,77 +4,56 @@ import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import logo from "../assets/img/argentBankLogo.png";
 import "../styles/components/Header.css";
 import { NavLink } from "react-router-dom";
-import userProfile from "../services/userProfile";
-import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logoutRequest } from "../features/actions";
+import { useSelector } from "react-redux";
 
 function Header() {
-  const [token, setToken] = useState(localStorage.getItem("token"));
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const result = await userProfile(token);
-      setData(result);
-    };
-    getData();
-  }, [token]);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const auth = useSelector((state) => state.auth);
 
   const logoutHandler = () => {
-    setToken(localStorage.removeItem("token"));
+    dispatch(logoutRequest());
   };
 
-  if (!data) {
-    return (
-      <nav className="main-nav">
-        <NavLink to="/">
-          <img src={logo} alt="Logo ArgentBank" />
-          <h1 className="sr-only">Argent Bank</h1>
-        </NavLink>
-        <NavLink to="/login" className="main-nav-item">
-          <FontAwesomeIcon icon={faCircleUser} className="main-nav-item" />
-          Sign In
-        </NavLink>
-      </nav>
-    );
-  } else {
-    return (
-      <nav className="main-nav">
-        <NavLink to="/">
-          <img src={logo} alt="Logo ArgentBank" />
-          <h1 className="sr-only">Argent Bank</h1>
-        </NavLink>
+  return (
+    <nav className="main-nav">
+      <NavLink to="/">
+        <img src={logo} alt="Logo ArgentBank" />
+        <h1 className="sr-only">Argent Bank</h1>
+      </NavLink>
 
-        {!token ? (
-          <div>
-            <NavLink to="/login" className="main-nav-item">
-              <FontAwesomeIcon icon={faCircleUser} className="main-nav-item" />
-              Sign In
-            </NavLink>
-          </div>
-        ) : (
-          ""
-        )}
+      {!auth.token ? (
+        <div>
+          <NavLink to="/login" className="main-nav-item">
+            <FontAwesomeIcon icon={faCircleUser} className="main-nav-item" />
+            Sign In
+          </NavLink>
+        </div>
+      ) : (
+        ""
+      )}
 
-        {token ? (
-          <div>
-            <NavLink to="/profile" className="main-nav-item">
-              <FontAwesomeIcon icon={faCircleUser} className="main-nav-item" />
-              {data.body.firstName}
-            </NavLink>
-            <NavLink onClick={logoutHandler} to="/" className="main-nav-item">
-              <FontAwesomeIcon
-                icon={faRightFromBracket}
-                className="main-nav-item"
-              />
-              Sign Out
-            </NavLink>
-          </div>
-        ) : (
-          ""
-        )}
-      </nav>
-    );
-  }
+      {auth.token ? (
+        <div>
+          <NavLink to="/profile" className="main-nav-item">
+            <FontAwesomeIcon icon={faCircleUser} className="main-nav-item" />
+            {user.firstName}
+          </NavLink>
+          <NavLink onClick={logoutHandler} to="/" className="main-nav-item">
+            <FontAwesomeIcon
+              icon={faRightFromBracket}
+              className="main-nav-item"
+            />
+            Sign Out
+          </NavLink>
+        </div>
+      ) : (
+        ""
+      )}
+    </nav>
+  );
 }
 
 export default Header;

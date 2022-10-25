@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import login from "../../services/login";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../features/actions";
 
 function SignInForm() {
   const [email, setEmail] = useState("");
@@ -11,18 +12,14 @@ function SignInForm() {
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await login({ email, password });
 
-    console.log("response", response);
+    dispatch(loginUser({ email, password }));
 
-    if (response.status === 200) {
-      if (response.body.token) {
-        localStorage.setItem("token", JSON.stringify(response.body.token));
-      }
-      navigate("/profile");
-    }
+    navigate("/profile");
   };
 
   return (

@@ -2,13 +2,16 @@ import "../../styles/components/SignIn/SignInForm.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../features/actions";
 
 function SignInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const auth = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
@@ -18,9 +21,15 @@ function SignInForm() {
     event.preventDefault();
 
     dispatch(loginUser({ email, password }));
-
-    navigate("/profile");
   };
+
+  useEffect(() => {
+    if (auth.token) {
+      navigate("/profile");
+    } else {
+      setErrorMessage(auth.message);
+    }
+  }, [auth, navigate]);
 
   return (
     <section className="sign-in-content">
@@ -55,6 +64,9 @@ function SignInForm() {
         <button type="submit" className="sign-in-button">
           Sign In
         </button>
+        {errorMessage ? (
+          <div className="errorMessage">{errorMessage}</div>
+        ) : null}
       </form>
     </section>
   );

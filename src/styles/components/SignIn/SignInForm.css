@@ -47,3 +47,7 @@ form {
   color: #fff;
   width: 100%;
 }
+
+.errorMessage {
+  margin-top: 20px;
+}

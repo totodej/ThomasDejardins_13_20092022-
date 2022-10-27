@@ -1,7 +1,3 @@
-export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
-export const USER_LOGIN_FAIL = "USER_LOGIN_FAIL";
-export const USER_LOGOUT = "USER_LOGOUT";
-
 export const loginSuccess = (token, status, message) => {
   return {
     type: "LOGIN_SUCCESS",
@@ -53,8 +49,8 @@ export const loginUser = (credential) => {
       .then((data) => data.json())
       .then((data) => {
         try {
-          dispatch(userProfile(data.body.token));
           dispatch(loginSuccess(data.body.token, data.status, data.message));
+          dispatch(userProfile(data.body.token));
         } catch (e) {
           dispatch(loginFailure(data.status, data.message));
         }
